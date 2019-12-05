@@ -59,16 +59,21 @@ CHIP ALU {
    Xor16(a=flag4, b=y1, out=y2);
 
    // if (f == 1)  set out = x + y
-   
-
    // if (f == 0)  set out = x & y
-
+   Add16(a=x2, b=y2, out=out1);
+   And16(a=x2, b=y2, out=out2);
+   Mux16(a=out2, b=out1, sel=f, out=out3); 
 
    // if (no == 1) set out = !out
-
+   Mux16(a=false, b=true, sel=no, out=flag5); 
+   Xor16(a=flag5, b=out3, out=out4);
+   And16(a=true, b=out4, out=out);
 
    // if (out == 0) set zr = 1
-
+   Or16Way(in=out4, out=flag6);
+   Mux(a=true, b=false, sel=flag6, out=zr);
 
    // if (out < 0) set ng = 1
+   getLast(in=out4, out=flag7);
+   Mux(a=false, b=true, sel=flag7, out=ng);
 }
